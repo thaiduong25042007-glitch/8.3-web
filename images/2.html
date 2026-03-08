@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-3 Special Gift</title>
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --secondary-color: #ff758f;
+            --bg-color: #fff0f3;
+            --envelope-w: 300px;
+            --envelope-h: 200px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            perspective: 1500px;
+        }
+
+        /* --- NỀN HOA RƠI --- */
+        .particle {
+            position: fixed;
+            top: -10%;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 1;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* --- CONTAINER CHÍNH --- */
+        .container {
+            position: relative;
+            top: 100px; /* Đẩy xuống để khi thiệp trồi lên không bị mất phần trên */
+            transition: all 0.8s ease;
+        }
+
+        /* --- BAO THƯ --- */
+        .envelope-wrapper {
+            position: relative;
+            width: var(--envelope-w);
+            height: var(--envelope-h);
+            background: var(--secondary-color);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        /* Nắp bao thư */
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-color);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            z-index: 5;
+            transform-origin: top;
+            transition: transform 0.6s ease;
+        }
+
+        .open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .envelope-pocket {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--secondary-color);
+            z-index: 4;
+            clip-path: polygon(0 40%, 100% 40%, 100% 100%, 0 100%);
+        }
+
+        /* --- TẤM THIỆP BÊN TRONG --- */
+        .card {
+            position: absolute;
+            top: 5px;
+            left: 10px;
+            width: calc(var(--envelope-w) - 20px);
+            height: calc(var(--envelope-h) - 10px);
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 3;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            overflow: hidden; /* Ban đầu ẩn nội dung thừa */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Khi mở: Thiệp trồi lên cao, to ra và hiện hết nội dung */
+        .open .card {
+            transform: translateY(-280px); /* Đẩy lên cao */
+            height: 420px; /* Mở rộng chiều cao để hiện hết chữ */
+            opacity: 1;
+            z-index: 6;
+            overflow-y: auto; /* Cho phép cuộn nếu chữ quá dài */
+        }
+
+        .card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--primary-color);
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+
+        .card h2 {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+        }
+
+        .card p {
+            color: #444;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin: 5px 0;
+        }
+
+        /* --- ẢNH BAY TƯƠNG TÁC --- */
+        .floating-photo {
+            position: fixed;
+            width: 90px;
+            height: 90px;
+            border-radius: 8px;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 100;
+            animation: flyUp 7s linear forwards;
+        }
+
+        .floating-photo.active {
+            animation-play-state: paused;
+            transform: scale(2.5) rotate(0deg) !important;
+            z-index: 1000;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translate(0, 0) rotate(0deg); bottom: 20%; left: 50%; opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translate(var(--tx), -120vh) rotate(var(--tr)); bottom: 20%; left: 50%; opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        <div class="envelope-wrapper" onclick="toggleLetter()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-pocket"></div>
+            
+            <div class="card">
+                <img src="Ảnh chụp màn hình 2026-03-08 232122.png" alt="Avatar">
+                
+                <h2>Happy Women's Day!</h2>
+                
+                <p>Gửi người phụ nữ tuyệt vời nhất trong lòng tớ!</p>
+                <p>Hôm nay là ngày 8-3, tớ muốn dành những lời chúc tốt đẹp nhất đến cậu. Chúc cậu luôn giữ được nụ cười rạng rỡ trên môi, sự tự tin trong công việc và niềm hạnh phúc trong cuộc sống.</p>
+                <p>Cảm ơn cậu đã luôn đồng hành và là nguồn động lực lớn lao cho tớ mỗi ngày. Mong rằng cậu sẽ còn nhiều mùa 8-3 hạnh phúc bên những người cậu trân trọng nữa nhé!</p>
+                
+                <p style="font-weight: bold; color: #ff4d6d; margin-top: 20px;">Trân trọng và thương cậu rất nhiều ❤️</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mảng chứa link ảnh bay xung quanh
+        const photoLinks = [
+            'z7600568487465_68e3368dc57e1af0fcea634939cbbdb3.jpg',
+            'z7600568499824_571be555b40a239971ecfe82921c3b71.jpg',
+            'z7600568506002_597a14c20ed85495acb756b90d429894.jpg',
+            'z7600568513386_65dd589a9d2ff1a15f5e18e197abeea2.jpg',
+            'z7600568528499_099906780c736e6fd6ab11b2281ae133.jpg',
+            'z7600568529963_1cb9d3c79b8f3b40ced521993a8de3f4.jpg',
+            'z7600568532071_03980e6f3cd998c65da419ce5821ec03.jpg',
+            'z7600568554909_c75272880304ff728d8160b8507d9f0c.jpg',
+            'z7600568556064_c1100bed38751167cc023f94756337ba.jpg',
+            'z7600568559031_34cfd7cbdfa1aaaf9240344ab424145b.jpg'
+        ];
+
+        let isOpened = false;
+
+        function toggleLetter() {
+            const container = document.getElementById('mainContainer');
+            isOpened = !isOpened;
+            
+            if (isOpened) {
+                container.classList.add('open');
+                startPhotoRain();
+            } else {
+                container.classList.remove('open');
+            }
+        }
+
+        function startPhotoRain() {
+            setInterval(() => {
+                if(!isOpened) return;
+                createPhoto();
+            }, 1200);
+        }
+
+        function createPhoto() {
+            const img = document.createElement('img');
+            img.src = photoLinks[Math.floor(Math.random() * photoLinks.length)];
+            img.className = 'floating-photo';
+            
+            // Random hướng bay
+            const tx = (Math.random() * 400 - 200) + 'px';
+            const tr = (Math.random() * 360) + 'deg';
+            img.style.setProperty('--tx', tx);
+            img.style.setProperty('--tr', tr);
+
+            img.onclick = (e) => {
+                e.stopPropagation();
+                img.classList.toggle('active');
+            };
+
+            document.body.appendChild(img);
+            setTimeout(() => img.remove(), 7000);
+        }
+
+        // Hiệu ứng hoa rơi
+        function createFlower() {
+            const flowers = ['🌸', '🌹', '❤️', '✨'];
+            const f = document.createElement('div');
+            f.className = 'particle';
+            f.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+            f.style.left = Math.random() * 100 + 'vw';
+            f.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            f.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.body.appendChild(f);
+            setTimeout(() => f.remove(), 6000);
+        }
+        setInterval(createFlower, 300);
+    </script>
+</body>
+</html>
